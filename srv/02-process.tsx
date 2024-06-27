@@ -18,14 +18,14 @@ const counts = rawData.filter(row => !isEmpty(row)).map(row => {
     return { ...row, count };
 });
 
-const cleanCounts = counts.filter(row => row.count > 0).sort((a, b) => b.count - a.count).map(row => {
+const cleanCounts = await counts.filter(row => row.count > 0).sort((a, b) => b.count - a.count).map(row => {
     // rename keys according to the columnNames
     let newRow = {
-        name: row["Křestní jméno"],
+        name: row.column1,
         count: row.count
     };
     for (const key in row) {
-        if (key !== 'count' && key !== 'Křestní jméno') {
+        if (key !== 'count' && key !== 'column1') {
             newRow[columnNames[key]] = row[key];
         }
     }
@@ -41,7 +41,7 @@ let counterSimple = 0;
 let counterComplex = 0;
 for (const row of cleanCounts as any[]) {
     // Capture both words and delimiters
-    const parts = row["Křestní jméno"].toString().trim().match(/(\p{L}+|[\s.-]+)/gu);
+    const parts = row.name.toString().trim().match(/(\p{L}+|[\s.-]+)/gu);
     let processedName = '';
     if (parts) {
         for (let i = 0; i < parts.length; i++) {
