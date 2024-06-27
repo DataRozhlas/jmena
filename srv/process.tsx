@@ -20,9 +20,9 @@ async function readExcelFile(filePath) {
 
 // Example usage
 const filePath = 'srv/data/jmena-raw-sample.xlsx';
-let resultSimple: string[] = []
+let resultSimple: [string, number][] = []
 
-let resultComplex: string[] = []
+let resultComplex: [string, number][] = []
 
 
 const rawData = await readExcelFile(filePath)
@@ -35,7 +35,7 @@ if (Array.isArray(rawData) && rawData.length > 0) {
         // Capture both words and delimiters
         const parts = row["Křestní jméno"].toString().trim().match(/(\p{L}+|[\s.-]+)/gu);
         let processedName = '';
-
+        let count = 0;
         if (parts) {
             for (let i = 0; i < parts.length; i++) {
                 // Check if the part is a word
@@ -48,13 +48,21 @@ if (Array.isArray(rawData) && rawData.length > 0) {
                 }
             }
         }
-        if (/[ .-]/.test(processedName)) {
-            resultComplex.push(processedName);
-        } else {
-            resultSimple.push(processedName);
-        }
-        console.log(processedName);
+        const keys = Object.keys(row).filter(key => key !== 'Křestní jméno' && key !== '__rowNum__');
 
+        keys.forEach(key => {
+            count = count + row[key];
+        });
+
+        if (count > 0) {
+
+            if (/[ .-]/.test(processedName)) {
+                resultComplex.push([processedName, count]);
+            } else {
+                resultSimple.push([processedName, count]);
+            }
+            console.log(processedName, count);
+        }
     })
 }
 
@@ -64,9 +72,12 @@ await Bun.write('srv/data/namesComplex.json', JSON.stringify(resultComplex, null
 console.log('Results written to namesSimple.json and namesComplex.json successfully.');
 
 // Convert resultSimple and resultComplex to TSV format
-const toTsvString = (data: string[]) => data.join('\n').replace(/(.+)/g, '$1');
-const simpleTsv = toTsvString(resultSimple);
-const complexTsv = toTsvString(resultComplex);
+const arrayToTsv = (data) => data.map(row => row.join('\t')).join('\n');
+
+const simpleTsv = arrayToTsv(resultSimple);
+const complexTsv = arrayToTsv(resultComplex);
+
+
 
 // Writing the TSV data to files
 await Bun.write('srv/data/namesSimple.tsv', simpleTsv);
