@@ -19,7 +19,7 @@ async function readExcelFile(filePath) {
 
 
 // Example usage
-const filePath = 'srv/data/jmena-raw-sample.xlsx';
+const filePath = 'srv/data/jmena-raw.xlsx';
 let resultSimple: [string, number][] = []
 
 let resultComplex: [string, number][] = []
@@ -27,11 +27,13 @@ let resultComplex: [string, number][] = []
 
 const rawData = await readExcelFile(filePath)
 
-console.log(rawData)
+
 
 
 if (Array.isArray(rawData) && rawData.length > 0) {
-    rawData.forEach((row: any) => {
+    let counterSimple = 0;
+    let counterComplex = 0;
+    for (const row of rawData as any[]) {
         // Capture both words and delimiters
         const parts = row["Křestní jméno"].toString().trim().match(/(\p{L}+|[\s.-]+)/gu);
         let processedName = '';
@@ -58,12 +60,16 @@ if (Array.isArray(rawData) && rawData.length > 0) {
 
             if (/[ .-]/.test(processedName)) {
                 resultComplex.push([processedName, count]);
+                await Bun.write(`public/data/complex/${counterComplex}.json`, JSON.stringify({ row, processedName, count }, null, 2));
+                counterComplex++;
             } else {
                 resultSimple.push([processedName, count]);
+                await Bun.write(`public/data/simple/${counterSimple}.json`, JSON.stringify({ ...row, processedName, count }, null, 2));
+                counterSimple++;
             }
             console.log(processedName, count);
         }
-    })
+    }
 }
 
 // Writing result to names.json using Bun

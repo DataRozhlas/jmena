@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 
 srv/data
+public/data
