@@ -8,7 +8,17 @@ const rawData = await Bun.file('srv/data/jmena-raw.json').json();
 const columnNames = rawData.shift();
 
 // count sums of all columns
-const counts = rawData.filter(row => !isEmpty(row)).map(row => {
+const counts = rawData.filter(row => !isEmpty(row)).filter(
+    row => {
+        let include = true;
+        for (const key in row) {
+            if (key !== "column1" && row[key] < 3) {
+                include = false
+            }
+        }
+        return include
+    }
+).map(row => {
     let count = 0;
     for (const key in row) {
         if (key !== 'column1') {
