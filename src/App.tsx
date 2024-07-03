@@ -17,7 +17,32 @@ function App() {
   const [complexLoaded, setComplexLoaded] = useState(false);
   const [showComplex, setShowComplex] = useState(false);
 
-  const [selectedNames, setSelectedNames] = useState<{ id: number, set: string }[]>([]);
+  const [selectedNames, setSelectedNames] = useState<{ id: number, set: string }[]>([
+    {
+      "id": 85,
+      "set": "s"
+    },
+    {
+      "id": 419,
+      "set": "s"
+    },
+    {
+      "id": 2,
+      "set": "s"
+    },
+    {
+      "id": 20,
+      "set": "s"
+    },
+    {
+      "id": 599,
+      "set": "s"
+    },
+    {
+      "id": 7,
+      "set": "s"
+    }
+  ]);
 
   const [currentData, setCurrentData] = useState<[string, number, number, string][]>(simpleData);
 
@@ -75,14 +100,18 @@ function App() {
     }
   }, [])
 
+  // useEffect(() => {
+  //   console.log("Selected names changed", selectedNames)
+  // }, [selectedNames])
+
 
   if (!simpleLoaded) {
     return <div>Strpení...</div>
   }
 
   return (
-    <div className="space-y-2">
-      <h1 className="text-xl font-bold mb-4">{`Prohledat ${currentData.length.toLocaleString("cs-CZ")} křestních jmen z let 1900 až 2023`}</h1>
+    <div className="space-y-2 max-w-[620px] mx-auto">
+      <h1 className="text-xl font-bold mb-4">{`Prohledat ${currentData.length.toLocaleString("cs-CZ")} křestních jmen`}</h1>
       <div className="pb-4 space-y-2">
         <div className="flex items-center space-x-2">
           <Switch id="simple-names" checked={showSimple} onCheckedChange={toggleChecked(!showSimple, "simple")} />
@@ -93,7 +122,7 @@ function App() {
           <Label htmlFor="complex-names">Složená jména, např. Anna Marie</Label>
         </div>
       </div>
-      <div className="max-w-xl">
+      <div className="">
         {simpleLoaded && <MultiSelect
           options={currentData}
           onValueChange={setSelectedNames}
@@ -101,7 +130,7 @@ function App() {
           placeholder="Vyberte jméno"
           variant="inverted"
           animation={2}
-          maxCount={4}
+          maxCount={6}
         />}
 
       </div>

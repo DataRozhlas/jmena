@@ -138,109 +138,108 @@ export const MultiSelect = forwardRef<
         };
 
         return (
-            <>
-                <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-                    <PopoverTrigger asChild>
-                        <Button
-                            ref={ref}
-                            {...props}
-                            onClick={handleTogglePopover}
-                            className={cn(
-                                "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit",
-                                className
-                            )}
-                        >
-                            {selectedValues.length > 0 ? (
-                                <div className="flex justify-between items-center w-full">
-                                    <div className="flex flex-wrap items-center">
-                                        {selectedValues.slice(0, maxCount).map((value) => {
-                                            const option = options.find((option) => option[2] === value.id && option[3] === value.set);
-                                            return (
-                                                <Badge
-                                                    key={`${value.id}-${value.set}`}
-                                                    className={cn(
-                                                        multiSelectVariants({ variant, className })
-                                                    )}
-                                                    style={{ animationDuration: `${animation}s` }}
-                                                >
-                                                    {option ? option[0] : "Unknown"}
-                                                    <XCircle
-                                                        className="ml-2 h-4 w-4 cursor-pointer"
-                                                        onClick={(event) => {
-                                                            event.stopPropagation();
-                                                            toggleOption(value.id, value.set);
-                                                        }}
-                                                    />
-                                                </Badge>
-                                            );
-                                        })}
-                                        {selectedValues.length > maxCount && (
+            <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+                <PopoverTrigger asChild>
+                    <Button
+                        ref={ref}
+                        {...props}
+                        onClick={handleTogglePopover}
+                        className={cn(
+                            "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit",
+                            className
+                        )}
+                    >
+                        {selectedValues.length > 0 ? (
+                            <div className="flex justify-between items-center w-full">
+                                <div className="flex flex-wrap items-center">
+                                    {selectedValues.slice(0, maxCount).map((value) => {
+                                        const option = options.find((option) => option[2] === value.id && option[3] === value.set);
+                                        return (
                                             <Badge
+                                                key={`${value.id}-${value.set}`}
                                                 className={cn(
-                                                    "bg-transparent text-foreground border-foreground/1 hover:bg-transparent",
                                                     multiSelectVariants({ variant, className })
                                                 )}
                                                 style={{ animationDuration: `${animation}s` }}
                                             >
-                                                {`+ ${selectedValues.length - maxCount} další`}
+                                                {option ? option[0] : "Unknown"}
                                                 <XCircle
                                                     className="ml-2 h-4 w-4 cursor-pointer"
                                                     onClick={(event) => {
                                                         event.stopPropagation();
-                                                        clearExtraOptions();
+                                                        toggleOption(value.id, value.set);
                                                     }}
                                                 />
                                             </Badge>
-                                        )}
-                                    </div>
-                                    <div className="flex items-center justify-between">
-                                        <XIcon
-                                            className="h-4 mx-2 cursor-pointer text-muted-foreground"
-                                            onClick={(event) => {
-                                                event.stopPropagation();
-                                                handleClear();
-                                            }}
-                                        />
-                                        <Separator
-                                            orientation="vertical"
-                                            className="flex min-h-6 h-full"
-                                        />
-                                        <ChevronDown className="h-4 mx-2 cursor-pointer text-muted-foreground" />
-                                    </div>
+                                        );
+                                    })}
+                                    {selectedValues.length > maxCount && (
+                                        <Badge
+                                            className={cn(
+                                                "bg-transparent text-foreground border-foreground/1 hover:bg-transparent",
+                                                multiSelectVariants({ variant, className })
+                                            )}
+                                            style={{ animationDuration: `${animation}s` }}
+                                        >
+                                            {`+ ${selectedValues.length - maxCount} další`}
+                                            <XCircle
+                                                className="ml-2 h-4 w-4 cursor-pointer"
+                                                onClick={(event) => {
+                                                    event.stopPropagation();
+                                                    clearExtraOptions();
+                                                }}
+                                            />
+                                        </Badge>
+                                    )}
                                 </div>
-                            ) : (
-                                <div className="flex items-center justify-between w-full mx-auto">
-                                    <span className="text-sm text-muted-foreground mx-3">
-                                        {placeholder}
-                                    </span>
-                                    <ChevronDown className="h-4 cursor-pointer text-muted-foreground mx-2" />
+                                <div className="flex items-center justify-between">
+                                    <XIcon
+                                        className="h-4 mx-2 cursor-pointer text-muted-foreground"
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+                                            handleClear();
+                                        }}
+                                    />
+                                    <Separator
+                                        orientation="vertical"
+                                        className="flex min-h-6 h-full"
+                                    />
+                                    <ChevronDown className="h-4 mx-2 cursor-pointer text-muted-foreground" />
                                 </div>
-                            )}
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                        className="w-[200px] p-0"
-                        align="start"
-                        onEscapeKeyDown={() => setIsPopoverOpen(false)}
-                    >
-                        <Command shouldFilter={false}>
-                            <CommandInput
-                                placeholder="Hledat..."
-                                onKeyDown={handleInputKeyDown}
-                                value={searchValue}
-                                onValueChange={(event) => { setSearchValue(event) }}
-                            />
-                            <CommandList>
-                                <CommandEmpty>No results found.</CommandEmpty>
+                            </div>
+                        ) : (
+                            <div className="flex items-center justify-between w-full mx-auto">
+                                <span className="text-sm text-muted-foreground mx-3">
+                                    {placeholder}
+                                </span>
+                                <ChevronDown className="h-4 cursor-pointer text-muted-foreground mx-2" />
+                            </div>
+                        )}
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                    className="w-[200px] p-0"
+                    align="end"
+                    onEscapeKeyDown={() => setIsPopoverOpen(false)}
+                >
+                    <Command shouldFilter={false}>
+                        <CommandInput
+                            placeholder="Hledat..."
+                            onKeyDown={handleInputKeyDown}
+                            value={searchValue}
+                            onValueChange={(event) => { setSearchValue(event) }}
+                        />
+                        <CommandList>
+                            <CommandEmpty>No results found.</CommandEmpty>
 
 
-                                <CommandGroup>
-                                    <FilteredList
-                                        filteredOptions={filteredOptions}
-                                        selectedValues={selectedValues}
-                                        toggleOption={toggleOption} />
+                            <CommandGroup>
+                                <FilteredList
+                                    filteredOptions={filteredOptions}
+                                    selectedValues={selectedValues}
+                                    toggleOption={toggleOption} />
 
-                                    {/* {options.map((option) => {
+                                {/* {options.map((option) => {
                                     const isSelected = selectedValues.includes(option[1]);
                                     return (
                                         <CommandItem
@@ -263,40 +262,39 @@ export const MultiSelect = forwardRef<
                                         </CommandItem>
                                     );
                                 })} */}
-                                </CommandGroup>
-                                <CommandSeparator />
-                                <CommandGroup>
-                                    <div className="flex items-center justify-between">
-                                        {selectedValues.length > 0 && (
-                                            <>
-                                                <CommandItem
-                                                    onSelect={handleClear}
-                                                    style={{ pointerEvents: "auto", opacity: 1 }}
-                                                    className="flex-1 justify-center cursor-pointer"
-                                                >
-                                                    Zrušit výběr
-                                                </CommandItem>
-                                                <Separator
-                                                    orientation="vertical"
-                                                    className="flex min-h-6 h-full"
-                                                />
-                                            </>
-                                        )}
-                                        <CommandSeparator />
-                                        <CommandItem
-                                            onSelect={() => setIsPopoverOpen(false)}
-                                            style={{ pointerEvents: "auto", opacity: 1 }}
-                                            className="flex-1 justify-center cursor-pointer"
-                                        >
-                                            Zavřít
-                                        </CommandItem>
-                                    </div>
-                                </CommandGroup>
-                            </CommandList>
-                        </Command>
-                    </PopoverContent>
-                </Popover>
-            </>
+                            </CommandGroup>
+                            <CommandSeparator />
+                            <CommandGroup>
+                                <div className="flex items-center justify-between">
+                                    {selectedValues.length > 0 && (
+                                        <>
+                                            <CommandItem
+                                                onSelect={handleClear}
+                                                style={{ pointerEvents: "auto", opacity: 1 }}
+                                                className="flex-1 justify-center cursor-pointer"
+                                            >
+                                                Zrušit výběr
+                                            </CommandItem>
+                                            <Separator
+                                                orientation="vertical"
+                                                className="flex min-h-6 h-full"
+                                            />
+                                        </>
+                                    )}
+                                    <CommandSeparator />
+                                    <CommandItem
+                                        onSelect={() => setIsPopoverOpen(false)}
+                                        style={{ pointerEvents: "auto", opacity: 1 }}
+                                        className="flex-1 justify-center cursor-pointer"
+                                    >
+                                        Zavřít
+                                    </CommandItem>
+                                </div>
+                            </CommandGroup>
+                        </CommandList>
+                    </Command>
+                </PopoverContent>
+            </Popover>
         );
     }
 );

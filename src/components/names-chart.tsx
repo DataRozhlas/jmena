@@ -24,15 +24,19 @@ type NamesData = {
 
 
 function NamesChart(props: ChartProps) {
-    const years = Array.from({ length: 2023 - 1900 + 1 }, (_, i) => Date.UTC(1990 + i, 0, 1));
+    // const years = Array.from({ length: 2023 - 1900 + 1 }, (_, i) => Date.UTC(1990 + i, 0, 1));
+
+    const years = Array.from({ length: 2023 - 1900 + 1 }, (_, i) => (1900 + i).toString());
 
     const [namesData, setNamesData] = useState<NamesData[]>([]);
+    const [legendHeight, setLegendHeight] = useState<number>(0);
+
 
     useEffect(() => {
         const fetchData = async (url: string) => {
             const response = await fetch(url);
             const data = await response.json();
-            console.log(`Fetched ${data.name} from ${url}`)
+            console.log(`Fetched ${data.processedName} from ${url}`)
             setNamesData(prevData => ([...prevData, { url, name: data.processedName, count: data.count, data: Array.from({ length: 2023 - 1900 + 1 }, (_, i) => 1900 + i).map(year => data[year] ?? 0) }]));
         };
         if (props.selectedNames.length === 0) {
@@ -52,9 +56,22 @@ function NamesChart(props: ChartProps) {
         props.selectedNames,
     ]);
 
+    useEffect(() => {
+        const legendElement = document.querySelector('.highcharts-legend');
+        if (legendElement) {
+            setLegendHeight(legendElement.clientHeight);
+        }
+    }, [namesData]);
+
     // if (props.selectedNames.length !== namesData.length) {
     //     return <div>Loading...</div>;
     // }
+
+    if (props.selectedNames.length === 0) {
+        return <div className="flex items-center justify-center h-48 text-gray-500">
+            Vyberte jména, která chcete porovnat
+        </div>
+    }
 
     return (
         <HighchartsProvider Highcharts={Highcharts}>
@@ -64,13 +81,13 @@ function NamesChart(props: ChartProps) {
                     states: { hover: { enabled: false } }, // disable hover
                 }
             }}>
-                <Chart height={500} />
+                <Chart height={500 + legendHeight} />
 
                 <Legend layout="horizontal" align="center" verticalAlign="bottom" />
 
                 <Tooltip shared valueSuffix=' lidí' />
 
-                <XAxis type="datetime" tickPositions={years}>
+                <XAxis categories={years} crosshair={true}>
                     <XAxis.Title>Rok narození</XAxis.Title>
                 </XAxis>
 
@@ -89,12 +106,12 @@ function NamesChart(props: ChartProps) {
                 Zdroj dat: Ministerstvo vnitra – <a href="https://www.mvcr.gov.cz/clanek/obecna-informace-k-registru-obyvatel.aspx">Registr obyvatel</a>
             </p>
 
-            <div>
+            {/* <div>
                 <h1>Chart</h1>
                 <p>{props.selectedNames.length} </p>
                 <p>{props.simpleData.length}</p>
                 <p>{props.complexData.length}</p>
-            </div>
+            </div> */}
         </HighchartsProvider>
     )
 }
