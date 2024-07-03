@@ -14,22 +14,24 @@ const formatNumber = (num: number) => {
 
 type FilteredListProps = {
     filteredOptions: [string, number, number, string][],
-    selectedValues: number[],
-    toggleOption: (index: number) => void
+    selectedValues: { id: number, set: string }[],
+    toggleOption: (id: number, set: string) => void
 };
 
 function FilteredList({ filteredOptions, selectedValues, toggleOption }: FilteredListProps) {
     return (
         <Virtuoso
             style={{ height: 250 }}
-            totalCount={filteredOptions.length}
-            itemContent={(index) => {
-                const option = filteredOptions[index];
-                const isSelected = selectedValues.includes(index);
+            //totalCount={filteredOptions.length}            
+            data={filteredOptions}
+            itemContent={(_, option) => {
+                const isSelected = selectedValues.some(
+                    selected => selected.id === option[2] && selected.set === option[3]
+                );
                 return (
                     <CommandItem
                         key={`${option[1]}-${option[0]}`}
-                        onSelect={() => toggleOption(option[2])}
+                        onSelect={() => toggleOption(option[2], option[3])}
                         style={{ pointerEvents: "auto", opacity: 1 }}
                         className="cursor-pointer"
                     >

@@ -53,8 +53,8 @@ interface MultiSelectProps
     //   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     extends VariantProps<typeof multiSelectVariants> {
     options: [string, number, number, string][];
-    onValueChange: (value: number[]) => void;
-    defaultValue: number[];
+    onValueChange: (value: { id: number, set: string }[]) => void;
+    defaultValue: { id: number, set: string }[];
     placeholder?: string;
     animation?: number;
     maxCount?: number;
@@ -81,7 +81,7 @@ export const MultiSelect = forwardRef<
         },
         ref
     ) => {
-        const [selectedValues, setSelectedValues] = useState<number[]>(defaultValue);
+        const [selectedValues, setSelectedValues] = useState<{ id: number, set: string }[]>(defaultValue);
         const [isPopoverOpen, setIsPopoverOpen] = useState(false);
         const [filteredOptions, setFilteredOptions] = useState(options);
         const [searchValue, setSearchValue] = useState("");
@@ -90,7 +90,6 @@ export const MultiSelect = forwardRef<
             const newFilteredOptions = options.filter((option) =>
                 option[0].toLowerCase().includes(searchValue.toLowerCase())
             )
-            console.log(newFilteredOptions)
             setFilteredOptions(newFilteredOptions);
         }, [searchValue, options]);
 
@@ -113,10 +112,12 @@ export const MultiSelect = forwardRef<
             }
         };
 
-        const toggleOption = (value: number) => {
-            const newSelectedValues = selectedValues.includes(value)
-                ? selectedValues.filter((v) => v !== value)
-                : [...selectedValues, value];
+        const toggleOption = (id: number, set: string) => {
+            const newSelectedValues = selectedValues.some(
+                selected => selected.id === id && selected.set === set
+            )
+                ? selectedValues.filter((v) => v.id !== id && v.set !== set)
+                : [...selectedValues, { id, set }];
             setSelectedValues(newSelectedValues);
             onValueChange(newSelectedValues);
         };
@@ -153,10 +154,10 @@ export const MultiSelect = forwardRef<
                                 <div className="flex justify-between items-center w-full">
                                     <div className="flex flex-wrap items-center">
                                         {selectedValues.slice(0, maxCount).map((value) => {
-                                            const option = options.find((_, index) => index === value);
+                                            const option = options.find((option) => option[2] === value.id && option[3] === value.set);
                                             return (
                                                 <Badge
-                                                    key={value}
+                                                    key={`${value.id}-${value.set}`}
                                                     className={cn(
                                                         multiSelectVariants({ variant, className })
                                                     )}
@@ -167,7 +168,7 @@ export const MultiSelect = forwardRef<
                                                         className="ml-2 h-4 w-4 cursor-pointer"
                                                         onClick={(event) => {
                                                             event.stopPropagation();
-                                                            toggleOption(value);
+                                                            toggleOption(value.id, value.set);
                                                         }}
                                                     />
                                                 </Badge>

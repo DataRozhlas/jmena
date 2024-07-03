@@ -14,9 +14,9 @@ function App() {
   const [complexLoaded, setComplexLoaded] = useState(false);
   const [showComplex, setShowComplex] = useState(false);
 
-  const [selectedNames, setSelectedNames] = useState<number[]>([]);
+  const [selectedNames, setSelectedNames] = useState<{ id: number, set: string }[]>([]);
 
-  const [data, setData] = useState<[string, number, number, string][]>(simpleData);
+  const [currentData, setCurrentData] = useState<[string, number, number, string][]>(simpleData);
 
   const fetchData = async (url: string) => {
     const response = await fetch(url);
@@ -33,21 +33,22 @@ function App() {
       let data = [];
       if (checked) { data.push(...simpleData) }
       if (showComplex) { data.push(...complexData) }
-      setData(data);
+      setCurrentData(data);
+      if (!checked) {
+        const newSelectedNames = selectedNames.filter(name => name.set === "c");
+        setSelectedNames(newSelectedNames);
+      }
     }
     if (which === "complex") {
-      if (!complexLoaded) {
-        const data = fetchData("data/namesComplex.tsv");
-        data.then((d) => {
-          setComplexData(d as [string, number, number, string][]);
-          setComplexLoaded(true);
-        });
-      }
       setShowComplex(checked);
       let data = [];
       if (showSimple) { data.push(...simpleData) }
       if (checked) { data.push(...complexData) }
-      setData(data);
+      setCurrentData(data);
+      if (!checked) {
+        const newSelectedNames = selectedNames.filter(name => name.set === "s");
+        setSelectedNames(newSelectedNames);
+      }
     }
   }
 
@@ -57,10 +58,22 @@ function App() {
       data.then((d) => {
         setSimpleData(d as [string, number, number, string][]);
         setSimpleLoaded(true);
-        setData(d as [string, number, number, string][])
+        setCurrentData(d as [string, number, number, string][]);
+      });
+    }
+    if (!complexLoaded) {
+      const data = fetchData("data/namesComplex.tsv");
+      data.then((d) => {
+        setComplexData(d as [string, number, number, string][]);
+        setComplexLoaded(true);
       });
     }
   }, [])
+
+
+  if (!simpleLoaded) {
+    return <div>Strpení...</div>
+  }
 
   return (
     <div className="space-y-2">
@@ -73,9 +86,9 @@ function App() {
         <Label htmlFor="complex-names">Složená jména, např. Anna Marie</Label>
       </div>
       <div className="p-4 max-w-xl">
-        <h1 className="text-2xl font-bold mb-4">{`${data.length.toLocaleString("cs-CZ")} jmen`}</h1>
+        <h1 className="text-xl font-bold mb-4">{`Prohledat ${currentData.length.toLocaleString("cs-CZ")} křestních jmen z let 1900 až 2023`}</h1>
         {simpleLoaded && <MultiSelect
-          options={data}
+          options={currentData}
           onValueChange={setSelectedNames}
           defaultValue={selectedNames}
           placeholder="Vyberte jméno"
