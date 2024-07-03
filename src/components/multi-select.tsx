@@ -113,10 +113,11 @@ export const MultiSelect = forwardRef<
         };
 
         const toggleOption = (id: number, set: string) => {
+            console.log(id, set);
             const newSelectedValues = selectedValues.some(
                 selected => selected.id === id && selected.set === set
             )
-                ? selectedValues.filter((v) => v.id !== id && v.set !== set)
+                ? selectedValues.filter((v) => v.id !== id || v.set !== set)
                 : [...selectedValues, { id, set }];
             setSelectedValues(newSelectedValues);
             onValueChange(newSelectedValues);
@@ -182,7 +183,7 @@ export const MultiSelect = forwardRef<
                                                 )}
                                                 style={{ animationDuration: `${animation}s` }}
                                             >
-                                                {`+ ${selectedValues.length - maxCount} more`}
+                                                {`+ ${selectedValues.length - maxCount} další`}
                                                 <XCircle
                                                     className="ml-2 h-4 w-4 cursor-pointer"
                                                     onClick={(event) => {
