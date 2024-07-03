@@ -19,6 +19,14 @@ type FilteredListProps = {
 };
 
 function FilteredList({ filteredOptions, selectedValues, toggleOption }: FilteredListProps) {
+    if (filteredOptions.length === 0) {
+        return (
+            <div className="flex items-center justify-center h-48 text-gray-500">
+                Žádné výsledky
+            </div>
+        );
+    }
+
     return (
         <Virtuoso
             style={{ height: 250 }}

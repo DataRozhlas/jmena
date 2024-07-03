@@ -33,6 +33,7 @@ function App() {
       let data = [];
       if (checked) { data.push(...simpleData) }
       if (showComplex) { data.push(...complexData) }
+      data.sort((a, b) => b[1] - a[1]);
       setCurrentData(data);
       if (!checked) {
         const newSelectedNames = selectedNames.filter(name => name.set === "c");
@@ -44,6 +45,7 @@ function App() {
       let data = [];
       if (showSimple) { data.push(...simpleData) }
       if (checked) { data.push(...complexData) }
+      data.sort((a, b) => b[1] - a[1]);
       setCurrentData(data);
       if (!checked) {
         const newSelectedNames = selectedNames.filter(name => name.set === "s");
@@ -94,7 +96,7 @@ function App() {
           placeholder="Vyberte jméno"
           variant="inverted"
           animation={2}
-          maxCount={3}
+          maxCount={5}
         />}
 
       </div>
