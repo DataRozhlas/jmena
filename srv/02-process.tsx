@@ -8,17 +8,7 @@ const rawData = await Bun.file('srv/data/jmena-raw.json').json();
 const columnNames = rawData.shift();
 
 // count sums of all columns
-const counts = rawData.filter(row => !isEmpty(row)).filter(
-    row => {
-        let include = true;
-        for (const key in row) {
-            if (key !== "column1" && row[key] < 3) {
-                include = false
-            }
-        }
-        return include
-    }
-).map(row => {
+const counts = rawData.filter(row => !isEmpty(row)).map(row => {
     let count = 0;
     for (const key in row) {
         if (key !== 'column1') {
@@ -68,14 +58,24 @@ for (const row of cleanCounts as any[]) {
 
     if (/[ .-]/.test(processedName)) {
         resultComplex.push([processedName, row.count]);
-        await Bun.write(`public/data/complex/${counterComplex}.json`, JSON.stringify({ ...row, processedName }, null, 2));
+        if (row.count < 20) {
+            await Bun.write(`public/data/complex/${counterComplex}.json`, JSON.stringify({ processedName }, null, 2));
+        }
+        if (row.count > 19) {
+            await Bun.write(`public/data/complex/${counterComplex}.json`, JSON.stringify({ ...row, processedName }, null, 2));
+        }
         counterComplex++;
     } else {
         resultSimple.push([processedName, row.count]);
-        await Bun.write(`public/data/simple/${counterSimple}.json`, JSON.stringify({ ...row, processedName }, null, 2));
+        if (row.count < 20) {
+            await Bun.write(`public/data/simple/${counterSimple}.json`, JSON.stringify({ processedName }, null, 2));
+        }
+        if (row.count > 19) {
+            await Bun.write(`public/data/simple/${counterSimple}.json`, JSON.stringify({ ...row, processedName }, null, 2));
+        }
         counterSimple++;
     }
-    console.log(processedName);
+    // console.log(processedName);
 }
 
 // Writing result to names.json using Bun
