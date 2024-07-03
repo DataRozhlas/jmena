@@ -4,8 +4,8 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { MultiSelect } from "@/components/multi-select";
 import { Toaster } from "@/components/ui/sonner"
+import NamesChart from "@/components/names-chart"
 
-import { toast } from "sonner"
 
 function App() {
 
@@ -75,17 +75,6 @@ function App() {
     }
   }, [])
 
-  useEffect(() => {
-    // if selected name count is < 20, show a toast and remove it from the selected names
-    if (selectedNames.length === 0) return;
-    const lastName = selectedNames[selectedNames.length - 1];
-    const count = lastName.set === "s" ? simpleData[lastName.id][1] : complexData[lastName.id][1];
-    if (count < 20) {
-      toast.info(<div><p>Křestní jméno <strong>{lastName.set === "s" ? simpleData[lastName.id][0] : complexData[lastName.id][0]}</strong> se v evidenci obyvatel vyskytuje jen <strong>{count}</strong>×.</p><br /><p>Chceme chránit soukromí, proto <em>zobrazujeme detailní statistiky až u jmem s alespoň 20 výskyty</em>.</p></div>, { duration: 4000 });
-      setSelectedNames(selectedNames.slice(0, -1));
-    }
-  }, [selectedNames])
-
 
   if (!simpleLoaded) {
     return <div>Strpení...</div>
@@ -93,16 +82,18 @@ function App() {
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center space-x-2">
-        <Switch id="simple-names" checked={showSimple} onCheckedChange={toggleChecked(!showSimple, "simple")} />
-        <Label htmlFor="simple-names">Jednoslovná jména, např. Marie</Label>
+      <h1 className="text-xl font-bold mb-4">{`Prohledat ${currentData.length.toLocaleString("cs-CZ")} křestních jmen z let 1900 až 2023`}</h1>
+      <div className="pb-4 space-y-2">
+        <div className="flex items-center space-x-2">
+          <Switch id="simple-names" checked={showSimple} onCheckedChange={toggleChecked(!showSimple, "simple")} />
+          <Label htmlFor="simple-names">Jednoslovná jména, např. Marie</Label>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Switch id="complex-names" checked={showComplex} onCheckedChange={toggleChecked(!showComplex, "complex")} />
+          <Label htmlFor="complex-names">Složená jména, např. Anna Marie</Label>
+        </div>
       </div>
-      <div className="flex items-center space-x-2">
-        <Switch id="complex-names" checked={showComplex} onCheckedChange={toggleChecked(!showComplex, "complex")} />
-        <Label htmlFor="complex-names">Složená jména, např. Anna Marie</Label>
-      </div>
-      <div className="p-4 max-w-xl">
-        <h1 className="text-xl font-bold mb-4">{`Prohledat ${currentData.length.toLocaleString("cs-CZ")} křestních jmen z let 1900 až 2023`}</h1>
+      <div className="max-w-xl">
         {simpleLoaded && <MultiSelect
           options={currentData}
           onValueChange={setSelectedNames}
@@ -114,8 +105,11 @@ function App() {
         />}
 
       </div>
+      <div className="pt-4">
+        <NamesChart selectedNames={selectedNames} simpleData={simpleData} complexData={complexData} />
+      </div>
       <Toaster position="top-center" />
     </div>)
 }
 
-export default App
+export default App;

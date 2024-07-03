@@ -59,7 +59,7 @@ for (const row of cleanCounts as any[]) {
     if (/[ .-]/.test(processedName)) {
         resultComplex.push([processedName, row.count]);
         if (row.count < 20) {
-            await Bun.write(`public/data/complex/${counterComplex}.json`, JSON.stringify({ processedName }, null, 2));
+            await Bun.write(`public/data/complex/${counterComplex}.json`, JSON.stringify({ processedName, count: row.count }, null, 2));
         }
         if (row.count > 19) {
             await Bun.write(`public/data/complex/${counterComplex}.json`, JSON.stringify({ ...row, processedName }, null, 2));
@@ -68,7 +68,7 @@ for (const row of cleanCounts as any[]) {
     } else {
         resultSimple.push([processedName, row.count]);
         if (row.count < 20) {
-            await Bun.write(`public/data/simple/${counterSimple}.json`, JSON.stringify({ processedName }, null, 2));
+            await Bun.write(`public/data/simple/${counterSimple}.json`, JSON.stringify({ processedName, count: row.count }, null, 2));
         }
         if (row.count > 19) {
             await Bun.write(`public/data/simple/${counterSimple}.json`, JSON.stringify({ ...row, processedName }, null, 2));

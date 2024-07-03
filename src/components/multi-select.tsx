@@ -113,7 +113,6 @@ export const MultiSelect = forwardRef<
         };
 
         const toggleOption = (id: number, set: string) => {
-            console.log(id, set);
             const newSelectedValues = selectedValues.some(
                 selected => selected.id === id && selected.set === set
             )

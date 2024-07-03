@@ -3,6 +3,8 @@ import { CheckIcon } from "lucide-react"
 import { cn } from "@/lib/utils";
 import { CommandItem } from "@/components/ui/command";
 
+import { toast } from "sonner"
+
 
 const formatNumber = (num: number) => {
     if (num >= 1000) {
@@ -38,8 +40,13 @@ function FilteredList({ filteredOptions, selectedValues, toggleOption }: Filtere
                 );
                 return (
                     <CommandItem
-                        key={`${option[1]}-${option[0]}`}
-                        onSelect={() => toggleOption(option[2], option[3])}
+                        key={`${option[2]}-${option[0]}`}
+                        onSelect={() => {
+                            if (option[1] < 20 && !isSelected) {
+                                toast.info(<div><p>Křestní jméno <strong>{option[0]}</strong> se v evidenci obyvatel vyskytuje jen <strong>{option[1]}</strong>×.</p><br /><p>Chceme chránit soukromí, proto <em>zobrazujeme detailní statistiky až u jmem s alespoň 20 výskyty</em>.</p></div>, { duration: 3500 })
+                            }
+                            toggleOption(option[2], option[3])
+                        }}
                         style={{ pointerEvents: "auto", opacity: 1 }}
                         className="cursor-pointer"
                     >
