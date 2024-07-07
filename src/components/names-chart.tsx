@@ -96,7 +96,7 @@ function NamesChart(props: ChartProps) {
     // }
 
     if (props.selectedNames.length === 0) {
-        return <div className="flex items-center justify-center h-80 text-gray-500">
+        return <div className="flex items-center justify-center h-96 text-gray-500">
             Vyberte jména, která chcete porovnat
         </div>
     }

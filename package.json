@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "production": "aws s3 sync dist s3://datarozhlas/jmena --acl public-read && aws cloudfront create-invalidation --distribution-id E3ABKG4QXPTL3P --paths '/jmena/*'"
+    "production": "aws s3 sync dist s3://datarozhlas/jmena --acl public-read --delete && aws cloudfront create-invalidation --distribution-id E3ABKG4QXPTL3P --paths '/jmena/*'"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.1",

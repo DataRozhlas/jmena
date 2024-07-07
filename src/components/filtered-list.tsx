@@ -32,7 +32,7 @@ function FilteredList({ filteredOptions, selectedValues, toggleOption }: Filtere
     return (
         <Virtuoso
             style={{ height: 250 }}
-            //totalCount={filteredOptions.length}            
+            totalCount={filteredOptions.length}
             data={filteredOptions}
             itemContent={(_, option) => {
                 const isSelected = selectedValues.some(

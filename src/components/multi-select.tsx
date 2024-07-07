@@ -127,7 +127,8 @@ export const MultiSelect = forwardRef<
             onValueChange([]);
         };
 
-        const handleTogglePopover = () => {
+        const handleTogglePopover = (event: any) => {
+            event.preventDefault();
             setIsPopoverOpen((prev) => !prev);
         };
 
@@ -221,13 +222,17 @@ export const MultiSelect = forwardRef<
                     className="w-[200px] p-0"
                     align="end"
                     onEscapeKeyDown={() => setIsPopoverOpen(false)}
+                    asChild
                 >
                     <Command shouldFilter={false}>
                         <CommandInput
+
                             placeholder="Hledat..."
                             onKeyDown={handleInputKeyDown}
                             value={searchValue}
-                            onValueChange={(event) => { setSearchValue(event) }}
+                            onValueChange={(value) => {
+                                setSearchValue(value)
+                            }}
                         />
                         <CommandList>
                             <CommandEmpty>No results found.</CommandEmpty>

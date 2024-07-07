@@ -33,7 +33,7 @@ function App() {
     const text = await response.text();
     const parsed = await tsvParseRows(text);
     const data = await parsed.map((d, index) => [d[0], +d[1], index, url.includes("Complex") ? "c" : "s"]);
-    console.log(`Fetched ${data.length} rows from ${url}`)
+    // console.log(`Fetched ${data.length} rows from ${url}`)
     return data;
   };
 
