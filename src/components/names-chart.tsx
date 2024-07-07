@@ -2,16 +2,38 @@ import { useState, useEffect } from 'react';
 import Highcharts from 'highcharts';
 import exporting from 'highcharts/modules/exporting';
 import offlineExporting from 'highcharts/modules/offline-exporting';
+import exportData from 'highcharts/modules/export-data';
 
 exporting(Highcharts);
 offlineExporting(Highcharts);
+exportData(Highcharts);
 
 import { HighchartsChart, HighchartsProvider, Chart, Legend, LineSeries, XAxis, YAxis, Tooltip } from "react-jsx-highcharts";
 
 Highcharts.setOptions({
     lang: {
         numericSymbols: [" tis.", " mil.", " mld.", " bil."],
-    }
+        downloadPNG: "Stáhnout obrázek PNG",
+        downloadCSV: "Stáhnout data CSV",
+    },
+    exporting: {
+        buttons: {
+            contextButton: {
+                enabled: false
+            },
+            exportButton: {
+                text: 'Stáhnout',
+                // Use only the download related menu items from the default
+                // context button
+                menuItems: [
+                    'downloadPNG',
+                    'downloadCSV',
+                ]
+            },
+        },
+        filename: 'jmena',
+        enabled: true,
+    },
 });
 
 
@@ -81,13 +103,16 @@ function NamesChart(props: ChartProps) {
 
     return (
         <HighchartsProvider Highcharts={Highcharts}>
-            <HighchartsChart plotOptions={{
-                series: {
-                    animation: false,
-                    states: { hover: { enabled: false } }, // disable hover
-                }
-            }}>
-                <Chart height={500 + legendHeight} />
+            <HighchartsChart
+                plotOptions={{
+                    series: {
+                        animation: false,
+                        states: { hover: { enabled: false } }, // disable hover
+                    }
+                }}>
+                <Chart
+                    height={500 + legendHeight}
+                />
 
                 <Legend layout="horizontal" align="center" verticalAlign="bottom" />
 
