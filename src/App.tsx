@@ -3,8 +3,11 @@ import { tsvParseRows } from "d3-dsv";
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { MultiSelect } from "@/components/multi-select";
-import { Toaster } from "@/components/ui/sonner"
-import NamesChart from "@/components/names-chart"
+import { Toaster } from "@/components/ui/sonner";
+import NamesChart from "@/components/names-chart";
+
+import { usePostMessageWithHeight } from "./components/hooks/usePostHeightMessage";
+
 
 
 function App() {
@@ -17,34 +20,13 @@ function App() {
   const [complexLoaded, setComplexLoaded] = useState(false);
   const [showComplex, setShowComplex] = useState(false);
 
-  const [selectedNames, setSelectedNames] = useState<{ id: number, set: string }[]>([
-    {
-      "id": 85,
-      "set": "s"
-    },
-    {
-      "id": 419,
-      "set": "s"
-    },
-    {
-      "id": 2,
-      "set": "s"
-    },
-    {
-      "id": 20,
-      "set": "s"
-    },
-    {
-      "id": 599,
-      "set": "s"
-    },
-    {
-      "id": 7,
-      "set": "s"
-    }
-  ]);
+  const [selectedNames, setSelectedNames] = useState<{ id: number, set: string }[]>([]);
 
   const [currentData, setCurrentData] = useState<[string, number, number, string][]>(simpleData);
+
+  const { containerRef, postHeightMessage } = usePostMessageWithHeight(`jmena-embed`);
+
+
 
   const fetchData = async (url: string) => {
     const response = await fetch(url);
@@ -100,6 +82,11 @@ function App() {
     }
   }, [])
 
+  useEffect(() => {
+    postHeightMessage();
+  }, [selectedNames, postHeightMessage]);
+
+
   // useEffect(() => {
   //   console.log("Selected names changed", selectedNames)
   // }, [selectedNames])
@@ -110,7 +97,7 @@ function App() {
   }
 
   return (
-    <div className="space-y-2 max-w-[620px] mx-auto">
+    <div className="space-y-2 max-w-[620px] mx-auto" ref={containerRef}>
       <h1 className="text-xl font-bold mb-4">{`Prohledat ${currentData.length.toLocaleString("cs-CZ")} křestních jmen`}</h1>
       <div className="pb-4 space-y-2">
         <div className="flex items-center space-x-2">

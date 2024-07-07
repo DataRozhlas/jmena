@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
 import Highcharts from 'highcharts';
+import exporting from 'highcharts/modules/exporting';
+import offlineExporting from 'highcharts/modules/offline-exporting';
+
+exporting(Highcharts);
+offlineExporting(Highcharts);
+
 import { HighchartsChart, HighchartsProvider, Chart, Legend, LineSeries, XAxis, YAxis, Tooltip } from "react-jsx-highcharts";
 
 Highcharts.setOptions({
@@ -36,7 +42,7 @@ function NamesChart(props: ChartProps) {
         const fetchData = async (url: string) => {
             const response = await fetch(url);
             const data = await response.json();
-            console.log(`Fetched ${data.processedName} from ${url}`)
+            //      console.log(`Fetched ${data.processedName} from ${url}`)
             setNamesData(prevData => ([...prevData, { url, name: data.processedName, count: data.count, data: Array.from({ length: 2023 - 1900 + 1 }, (_, i) => 1900 + i).map(year => data[year] ?? 0) }]));
         };
         if (props.selectedNames.length === 0) {
@@ -103,7 +109,7 @@ function NamesChart(props: ChartProps) {
                 </YAxis>
             </HighchartsChart>
             <p className="text-xs text-end">
-                Zdroj dat: Ministerstvo vnitra – <a href="https://www.mvcr.gov.cz/clanek/obecna-informace-k-registru-obyvatel.aspx">Registr obyvatel</a>
+                <a href="https://www.mvcr.gov.cz/clanek/obecna-informace-k-registru-obyvatel.aspx">Zdroj dat: Ministerstvo vnitra – Registr obyvatel</a>
             </p>
 
             {/* <div>
